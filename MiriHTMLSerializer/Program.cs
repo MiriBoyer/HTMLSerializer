@@ -1,42 +1,24 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using MiriHTMLSerializer;
 using System.Text.RegularExpressions;
-
-/*string d = "div#cccd";
-var r = new Regex("#(.*?)(\\.?)").Matches(d).ToList();
-var rrr=r.ElementAt(0);
-*/
-
 HtmlElement root;
-/*HtmlElement temp = root;
-*/
 Stack<int> stack = new Stack<int>();
-//string OpenTagName = "";
 var html = await Load("https://hebrewbooks.org/beis");
-
 var cleanEmptyLines = new Regex("\\n|\\r").Replace(html, "");
 var splitHtmlToLines = new Regex("<(.*?)>").Split(cleanEmptyLines).Where(s => s.Trim().Length > 0);
 var splitHtmlToLinesInArray = splitHtmlToLines.ToArray();
-/*var fs = new FileStream("D:\\קבצי משתמש\\Downloads\\mb.txt",
-                               FileMode.Create,
-                               FileAccess.Write);
-StreamWriter writer = new StreamWriter(fs);*/
 HtmlElement[] elements = new HtmlElement[splitHtmlToLinesInArray.Length];
 int currentSize = -1;
 for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
 {
     var temp = splitHtmlToLinesInArray[i].Trim();
     var splitSingleLine = temp.Split(" ");
-
     if (temp.Trim().Length > 0)
     {
         var TagName = splitSingleLine[0];
         if (HtmlHelper.Instance.JsonHtmlTags.Contains(TagName)&&TagName!="var")
         {
-            //stack.Push(i);
             elements[++currentSize] = new HtmlElement();            
-            //writer.WriteLine("-:"+str(currentSize)+temp+"-");
-
             if (currentSize == 0) root = elements[currentSize];
             elements[currentSize].Name = TagName;
             elements[currentSize].Parent = currentSize > 0 ? elements[currentSize - 1] : null;
@@ -44,13 +26,11 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
             elements[currentSize].Attributes = new List<string>();
             elements[currentSize].Classes = new List<string>();
             elements[currentSize].Children = new List<HtmlElement>();
-
             var attributes = new Regex("([^\\s]*?)=\"(.*?)\"").Matches(temp).ToList();
             var id = new Regex("id=\"(.*?)\"").Matches(temp).ToList();
             var classes = new Regex("class=\"(.*?)\"").Matches(temp).ToList();
             if (id.Count > 0)
                 elements[currentSize].Id = id.ElementAt(0).Value;
-
             foreach (var attr in attributes)
             {
                 elements[currentSize].Attributes.Add(attr.Value);
@@ -60,7 +40,7 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
                 elements[currentSize].Classes.Add(item.Value);
             }
 
-            if (/*temp[temp.Length - 1] == '/' || */HtmlHelper.Instance.JsonHtmlSelfClosingTags.Contains(TagName))
+            if (HtmlHelper.Instance.JsonHtmlSelfClosingTags.Contains(TagName))
             {
                 if (currentSize > 0)
                     elements[currentSize - 1].Children.Add(elements[currentSize]);
@@ -80,7 +60,6 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
             if (HtmlHelper.Instance.JsonHtmlTags.Contains(TagName.Substring(1)) && TagName[0] == '/' ||
                 HtmlHelper.Instance.JsonHtmlTags.Contains(closeTag) &&  closeTagEnd== "</")
             {
-               // writer.WriteLine("+:"+str(currentSize)+temp+"+");
                 if (elements[currentSize].Name != TagName.Substring(1)&&closeTag != elements[currentSize].Name)
                 {
                     Console.WriteLine("ERROR: the HTML syntax is not good, in line" + i);
@@ -99,16 +78,8 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
                     elements[currentSize].InnerHtml += temp;
             }
         }
-
-
-
-
-
-
     }
 }
-/*writer.Close();
-fs.Close();*/
 Console.ReadLine();
 var hashSet=new HashSet<HtmlElement>();
 async Task<string> Load(string url)
