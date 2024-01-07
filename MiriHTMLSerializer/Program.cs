@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using MiriHTMLSerializer;
 using System.Text.RegularExpressions;
-HtmlElement root;
+HtmlElement root=new HtmlElement(); ;
 Stack<int> stack = new Stack<int>();
 var html = await Load("https://hebrewbooks.org/beis");
 var cleanEmptyLines = new Regex("\\n|\\r").Replace(html, "");
@@ -80,8 +80,15 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
         }
     }
 }
+
+var li=root.ElementsBySelectors(Selector.CastToSelector("#form1"),true);
+var mul =new HashSet<HtmlElement>(li);
+Console.WriteLine(mul.Count());
+foreach (var item in mul)
+{
+    Console.WriteLine(item.Name);
+}
 Console.ReadLine();
-var hashSet=new HashSet<HtmlElement>();
 async Task<string> Load(string url)
 {
     HttpClient client = new HttpClient();

@@ -15,7 +15,7 @@ namespace MiriHTMLSerializer
         public string InnerHtml { get; set; }
         public HtmlElement Parent { get; set; }
         public List<HtmlElement> Children { get; set; }
-        public IEnumerable<HtmlElement> Descendants(HtmlElement root)
+        public IEnumerable<HtmlElement> Descendants()
         {
             Queue<HtmlElement> queue = new Queue<HtmlElement>();
             queue.Enqueue(this);
@@ -29,9 +29,9 @@ namespace MiriHTMLSerializer
                 yield return current;
             }
         }
-        public IEnumerable<HtmlElement> Ancestors(HtmlElement root)
+        public IEnumerable<HtmlElement> Ancestors()
         {
-            HtmlElement current = root;
+            HtmlElement current = this;
             while(current!=null)
             {
                 yield return current;

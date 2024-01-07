@@ -20,7 +20,6 @@ namespace MiriHTMLSerializer
             Selector root = new Selector(), temp = root, parent = null;
             for (int i = 0; i < splitToLevels.Length; i++)
             {
-
                 var level = splitToLevels[i].Trim();
                 var idInd = level.IndexOf('#');
                 var classInd = level.IndexOf('.');
@@ -33,8 +32,7 @@ namespace MiriHTMLSerializer
                 }
                 if (classInd != -1)
                 {
-                    if (idInd > classInd)
-                        temp.Classes = level.Substring(classInd + 1, idInd - classInd - 1).Split(" ").ToList();
+                    temp.Classes = level.Substring(classInd + 1, idInd > classInd ? idInd - classInd - 1 : level.Length - idInd - 1).Split(" ").ToList();
                 }
                 /*if (Math.Abs(idInd) > 0 && Math.Abs(classInd) > 0)
                 {
@@ -56,13 +54,12 @@ namespace MiriHTMLSerializer
                             if (idInd == -1)
                                 name = level.Substring(0, classInd);
                             else
-                                name= level.Substring(0,Math.Min(idInd, classInd));
+                                name = level.Substring(0, Math.Min(idInd, classInd));
                         }
                     }
                 }
                 if (name != "" && HtmlHelper.Instance.JsonHtmlTags.Contains(name))
                     temp.TagName = name;
-                
                 /*var r = new Regex("#|\\.").Matches(level).ToList();
 
                 //temp.TagName = level.Split(" ")[0];
@@ -87,24 +84,22 @@ namespace MiriHTMLSerializer
         }
         public override bool Equals(object? obj)
         {
-            if(obj is HtmlElement)
+            if (obj is HtmlElement)
             {
                 HtmlElement element = obj as HtmlElement;
                 if (element != null)
                 {
                     bool isClasses = true;
-                    foreach (var c in Classes)
-                    {
-                        if(!element.Classes.Contains(c))
-                            isClasses = false;
-                    }
-                   return (element.Name.Equals(TagName)||TagName==null)&&(element.Id.Equals(Id)||Id==null)&&isClasses;
+                    if (Classes != null)
+                        foreach (var c in Classes)
+                        {
+                            if (!element.Classes.Contains(c))
+                                isClasses = false;
+                        }
+                    return (TagName == null || element.Name.Equals(TagName)) && (Id == null ||( element.Id!=null&&element.Id.Equals(Id))) && isClasses;
                 }
             }
             return false;
         }
-
-
-
     }
 }
