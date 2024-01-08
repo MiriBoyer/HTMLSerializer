@@ -30,14 +30,14 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
             var id = new Regex("id=\"(.*?)\"").Matches(temp).ToList();
             var classes = new Regex("class=\"(.*?)\"").Matches(temp).ToList();
             if (id.Count > 0)
-                elements[currentSize].Id = id.ElementAt(0).Value;
+                elements[currentSize].Id = id.ElementAt(0).Value.Substring(4,id.ElementAt(0).Value.Length-5);
             foreach (var attr in attributes)
             {
                 elements[currentSize].Attributes.Add(attr.Value);
             }
             foreach (var item in classes)
             {
-                elements[currentSize].Classes.Add(item.Value);
+                elements[currentSize].Classes.Add(item.Value.Substring(7,item.Value.Length-8));
             }
 
             if (HtmlHelper.Instance.JsonHtmlSelfClosingTags.Contains(TagName))
@@ -70,7 +70,6 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
                         elements[currentSize - 1].Children.Add(elements[currentSize]);
                     currentSize--;
                 }
-
             }
             else
             {
@@ -80,28 +79,17 @@ for (int i = 0; i < splitHtmlToLinesInArray.Length; i++)
         }
     }
 }
-
-var li=root.ElementsBySelectors(Selector.CastToSelector("#form1"),true);
+var li=root.ElementsBySelectors(Selector.CastToSelector("#cpMstr_Panel1.header"),true);
 var mul =new HashSet<HtmlElement>(li);
 Console.WriteLine(mul.Count());
 foreach (var item in mul)
 {
     Console.WriteLine(item.Name);
 }
-Console.ReadLine();
 async Task<string> Load(string url)
 {
     HttpClient client = new HttpClient();
     var response = await client.GetAsync(url);
     var html = await response.Content.ReadAsStringAsync();
     return html;
-}
-string str(int i)
-{
-    string s = "";
-    for (int j = 0; j < i; j++)
-    {
-        s += "\t";
-    }
-    return s;
 }

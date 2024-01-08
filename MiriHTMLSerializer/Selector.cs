@@ -32,14 +32,8 @@ namespace MiriHTMLSerializer
                 }
                 if (classInd != -1)
                 {
-                    temp.Classes = level.Substring(classInd + 1, idInd > classInd ? idInd - classInd - 1 : level.Length - idInd - 1).Split(" ").ToList();
+                    temp.Classes = level.Substring(classInd + 1, idInd > classInd ? idInd - classInd - 1 : level.Length - classInd-1).Split(" ").ToList();
                 }
-                /*if (Math.Abs(idInd) > 0 && Math.Abs(classInd) > 0)
-                {
-                    idInd=idInd>-1?idInd:level.Length;
-                    classInd=classInd>-1?classInd:level.Length;
-
-                }*/
                 string name = "";
                 if (level[0] != '#' && level[0] != '.')
                 {
@@ -60,18 +54,6 @@ namespace MiriHTMLSerializer
                 }
                 if (name != "" && HtmlHelper.Instance.JsonHtmlTags.Contains(name))
                     temp.TagName = name;
-                /*var r = new Regex("#|\\.").Matches(level).ToList();
-
-                //temp.TagName = level.Split(" ")[0];
-                int start = 0, end = 0;
-                if (level.Contains('#'))
-                {
-                    start = level.IndexOf('#');
-                    end = level.Substring(start + 1).IndexOf(" ");
-                    temp.Id = level.Substring(start + 1, end - start);
-                }
-
-                temp.Classes = new Regex("class=\"(.*?)\"").Match(level).Value.Split(" ").ToList<string>();*/
                 temp.Parent = parent;
                 parent = temp;
                 if (i < splitToLevels.Length - 1)
